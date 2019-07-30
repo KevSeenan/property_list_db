@@ -34,5 +34,10 @@ property1.save()
 property2.save()
 property3.save()
 
+#property1.delete()
+#property2.update()
+
+properties = Property.all()
+
 binding.pry
 nil

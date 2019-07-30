@@ -3,7 +3,7 @@ require('pg')
 class Property
 
   attr_accessor :bedrooms, :buy_let_status
-  attr_reader :build_type, :year_built
+  attr_reader :build_type, :year_built, :id
 
   def initialize(property)
     @id = property[id].to_i() if property['id']
@@ -61,6 +61,17 @@ class Property
     db.prepare("delete", sql)
     db.exec_prepared("delete", values)
     db.close()
+
+  end
+
+  def self.all()
+    db = PG.connect({dbname: 'property_list', host: 'localhost'})
+    sql = "SELECT * FROM property_list"
+
+    db.prepare("all", sql)
+    property = db.exec_prepared("all")
+    db.close()
+    return property.map{ |property| Property.new(property) }
 
   end
 
