@@ -1,12 +1,12 @@
 require('pg')
 
-attr_accessor :bedrooms :buy_let_status
-attr_reader :build_type :year_built
+class Property
 
-class Property()
+  attr_accessor :bedrooms, :buy_let_status
+  attr_reader :build_type, :year_built
 
   def initialize(property)
-    @id = property[id]
+    @id = property[id].to_i() if property['id']
     @build_type = property['build_type']
     @bedrooms = property['bedrooms']
     @year_built = property['year_built']
@@ -14,7 +14,7 @@ class Property()
   end
 
   def save()
-    db = PG.connect({dbname: 'property_list' host: 'localhost'})
+    db = PG.connect({dbname: 'property_list', host: 'localhost'})
     sql = "INSERT INTO property_list
     (build_type, bedrooms, year_built, buy_let_status)
     VALUES ($1, $2, $3, $4) RETURNING id"
@@ -39,6 +39,27 @@ class Property()
 
     db.prepare("update", sql)
     db.exec_prepared("update", values)
+    db.close()
+
+  end
+
+  def Property.delete_all()
+    db = PG.connect({dbname: 'property_list', host: 'localhost'})
+    sql = "DELETE FROM property_list"
+
+    db.prepare("delete_all", sql)
+    db.exec_prepared("delete_all")
+    db.close()
+  end
+
+  def delete()
+    db = PG.connect({dbname: 'property_list', host: localhost})
+    sql = "DELETE FROM property_list WHERE id = $1"
+
+    values = [@id]
+
+    db.prepare("delete", sql)
+    db.exec_prepared("delete", values)
     db.close()
 
   end
