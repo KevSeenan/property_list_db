@@ -14,7 +14,7 @@ class Property()
   end
 
   def save()
-    db = PG.connect({dbname: 'propery_list' host: 'localhost'})
+    db = PG.connect({dbname: 'property_list' host: 'localhost'})
     sql = "INSERT INTO property_list
     (build_type, bedrooms, year_built, buy_let_status)
     VALUES ($1, $2, $3, $4) RETURNING id"
@@ -24,6 +24,21 @@ class Property()
     db.prepare("save", sql)
     result = db.exec_prepared("save", values)
     @id = result[0]['id'].to_i()
+    db.close()
+
+  end
+
+  def update()
+    db = PG.connect({dbname: "property_list", host: 'localhost'})
+
+    sql = "UPDATE property_list SET
+    (build_type, bedrooms, year_built, buy_let_status) = ($1, $2, $3, $4)
+    WHERE id = $5"
+
+    values = [@build_type, @bedrooms, @year_built, @buy_let_status, @id]
+
+    db.prepare("update", sql)
+    db.exec_prepared("update", values)
     db.close()
 
   end
